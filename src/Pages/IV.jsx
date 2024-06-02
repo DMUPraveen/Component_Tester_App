@@ -13,8 +13,8 @@ export default function IV() {
         await write_serial_port(port, new Uint8Array([0x01]));
         console.log("Serial Port Written");
         let buffer = new ArrayBuffer(1);
-        await read_serial_port(port, buffer);
-        console.log(buffer);
+        let result = await read_serial_port(port, buffer)
+        console.log(result);
 
     }
     return (
