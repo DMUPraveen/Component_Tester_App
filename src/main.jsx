@@ -10,6 +10,7 @@ import {
 import About from "./Pages/About";
 import Parent from "./Pages/Parent";
 import IV from "./Pages/IV";
+import SignalGenerator from "./Pages/Signal_Generator";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "iv",
         element: <IV />
+      },
+      {
+        path: "signalGenerator",
+        element: <SignalGenerator />
       },
       {
         path: "",

@@ -3,12 +3,13 @@ import DrawChart from "./Utilities/Draw_Chart"
 import Navbar from "./Components/Navbar";
 import { ToolGrid_Component, ToolGrid_General } from "./Components/ToolGrid";
 import { Outlet } from "react-router-dom";
+import product_logo from "./assets/product_logo.png"
 
 function App() {
 
   return (
     <div className="flex flex-col flex-grow items-center ">
-      <div className="font-black text-4xl">♛ Circuit King ♛</div>
+      <img src={product_logo} width={250}></img>
       <div className="h-2/12"> </div>
       <div className="flex flex-row w-full flex-grow">
         <div className="basis-1/5"></div>
