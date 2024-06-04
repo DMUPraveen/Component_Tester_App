@@ -37,8 +37,8 @@ export function ToolGrid_Component() {
     return (
         <div className="grid grid-cols-3 gap-4 justify-items-center h-2/4 content-center bg-zinc-150">
             <Tool tool_logo={resistor_logo} tool_name="reisto" />
-            <Tool tool_logo={capacitor_logo} tool_name="capacitor" />
-            <Tool tool_logo={inductor_logo} tool_name="inductor" />
+            <Tool tool_logo={capacitor_logo} tool_name="capacitor" to="capacitor" />
+            <Tool tool_logo={inductor_logo} tool_name="inductor" to="inductor" />
             <Tool tool_logo={diode_logo} tool_name="diode" />
             <Tool tool_logo={transistor_logo} tool_name="bjt" />
             <Tool tool_logo={mosfet_logo} tool_name="fet" />

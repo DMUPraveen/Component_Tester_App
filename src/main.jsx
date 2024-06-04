@@ -11,6 +11,8 @@ import About from "./Pages/About";
 import Parent from "./Pages/Parent";
 import IV from "./Pages/IV";
 import SignalGenerator from "./Pages/Signal_Generator";
+import { Capacitor } from "./Pages/Capacitor";
+import { Inductor } from "./Pages/Inductor";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "signalGenerator",
         element: <SignalGenerator />
+      },
+      {
+        path: "capacitor",
+        element: <Capacitor />
+      },
+      {
+        path: "inductor",
+        element: <Inductor />
       },
       {
         path: "",
