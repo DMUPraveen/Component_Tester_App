@@ -1,5 +1,5 @@
 
-export async function create_serial_port(baud_rate = 9600) {
+export async function create_serial_port(baud_rate = 115200) {
     const port = await navigator.serial.requestPort();
     await port.open({ baudRate: baud_rate });
     return port;

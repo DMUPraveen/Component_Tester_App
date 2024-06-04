@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import function_generator_logo from '../assets/function_generator_logo.png'
+import { arbitrary_wave, cosine_wave } from '../Utilities/Signal_Generator_func';
+import { SerialPortContext } from './Parent';
+import { read_serial_port, write_serial_port } from '../Utilities/Serial_Port';
 
 
 function SetupSinewave() {
     const [frequency, setFrequency] = useState(0);
     const [amplitude, setAmplitude] = useState(0);
+    const { port, setPort } = useContext(SerialPortContext)
     return (
         <>
             <div className="font-black text-2xl col-span-2">Frequency (Hz) </div>
@@ -25,8 +29,48 @@ function SetupSinewave() {
             <button className="w-2/3 font-bold 
             rounded-lg text-2xl text-center 
              text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
-                onClick={() => { console.log("Generate" + ' ' + frequency + 'Hz ' + amplitude) }}
+                onClick={async () => {
+                    if (port == null) return console.log("Port is null");
+                    let buffer = cosine_wave(parseInt(frequency), parseInt(amplitude));
+                    await write_serial_port(port, buffer);
+                    setTimeout(
+                        () => {
+                            let buffer = new ArrayBuffer(1);
+                            read_serial_port(port, buffer).then(
+                                (data) => {
+                                    console.log(data)
+                                }
+                            )
+                        }
+                        , 1000
+                    )
+                }}
             >Generate</button>
+            <button
+                className="w-2/3 font-bold 
+            rounded-lg text-2xl text-center 
+             text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
+
+                onClick={async () => {
+                    if (port == null) return console.log("Port is null");
+                    let buffer = arbitrary_wave(parseInt(frequency), new Array(400));
+                    console.log(buffer);
+                    await write_serial_port(port, buffer);
+                    setTimeout(
+                        () => {
+                            let buffer = new ArrayBuffer(1);
+                            read_serial_port(port, buffer).then(
+                                (data) => {
+                                    console.log(data)
+                                }
+                            )
+                        }
+                        , 1000
+                    )
+                }}
+            >
+                Hello
+            </button>
         </>
     )
 }
