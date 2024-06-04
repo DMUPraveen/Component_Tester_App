@@ -26,7 +26,7 @@ export function ToolGrid_General() {
             <Tool tool_logo={IVX_logo} tool_name="I-V X" />
             <Tool tool_logo={bode_logo} tool_name="bode" />
             <Tool tool_logo={function_generator_logo} tool_name="function generator" to="signalGenerator" />
-            <Tool tool_logo={oscilloscope_logo} tool_name="Oscilloscope" />
+            <Tool tool_logo={oscilloscope_logo} tool_name="Oscilloscope" to="Oscilloscope" />
             <Tool tool_logo={logic_analyzer_logo} tool_name="Logic Analyzer" />
         </div>
     )

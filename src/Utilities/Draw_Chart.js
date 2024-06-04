@@ -1,10 +1,8 @@
 import Chart from 'chart.js/auto'
-export default function DrawChart(canvasInstance) {
+export default function DrawChart(canvasInstance, x_val, y_val, chartref) {
     if (canvasInstance.current == null) {
         return () => { };
     }
-    const x_val = Array.from({ length: 201 }, (_, i) => i - 100);
-    const y_val = x_val.map((x) => x * x);
     const chart = new Chart(
         canvasInstance.current,
         {
@@ -13,7 +11,7 @@ export default function DrawChart(canvasInstance) {
                 labels: x_val,
                 datasets: [
                     {
-                        label: 'x^3 Function',
+                        label: '',
                         borderColor: '#FF6384',
                         backgroundColor: '#FFB1C1',
                         data: y_val,
@@ -23,5 +21,6 @@ export default function DrawChart(canvasInstance) {
             }
         }
     );
+    chartref.current = chart;
     return () => { console.log("Destroying the previous chart"); chart.destroy(); }
 }
