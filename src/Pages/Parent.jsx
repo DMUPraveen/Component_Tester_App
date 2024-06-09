@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar"
 import { useState, createContext } from "react"
 
 export const SerialPortContext = createContext(null);
+export const SerialReaderContext = createContext(null);
 
 export default function () {
     const [port, setPort] = useState(null);

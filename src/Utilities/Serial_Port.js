@@ -55,3 +55,4 @@ export async function write_serial_port(port, data) {
     console.log(data);
     writer.releaseLock();
 }
+
