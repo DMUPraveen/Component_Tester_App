@@ -12,7 +12,8 @@ export async function destroy_serial_port(port) {
 export async function read_serial_port(port, buffer, size) {
     let offset = 0;
     let reader = null;
-    console.log(buffer);
+    console.log(buffer.byteLength);
+    let bufferView = new Uint8Array(buffer, 0);
     try {
 
         reader = await port.readable.getReader();
@@ -25,20 +26,25 @@ export async function read_serial_port(port, buffer, size) {
     try {
         while (offset < size) {
             const { value, done } = await reader.read(
-                new Uint8Array(buffer, offset)
+                // new Uint8Array(buffer, offset)
             );
             if (done) {
                 break;
             }
-            buffer = value.buffer;
+            // buffer = value.buffer;
+            // console.log(buffer);
+            let valueView = new Uint8Array(value);
+            // console.log("value");
+            // console.log(value);
+            // console.log(bufferView);
+            // console.log(size, offset);
+            // console.log("value end");
+            bufferView.set(valueView, offset);
             offset += value.byteLength;
-            console.log(value);
-            console.log(offset);
-            console.log(buffer);
-            console.log(offset, buffer.byteLength);
         }
-        console.log("returning")
+        // console.log("returning")
         reader.releaseLock();
+        console.log(buffer);
         return buffer
     }
     catch (error) {
@@ -52,7 +58,7 @@ export async function read_serial_port(port, buffer, size) {
 export async function write_serial_port(port, data) {
     const writer = port.writable.getWriter();
     await writer.write(data);
-    console.log(data);
+    // console.log(data);
     writer.releaseLock();
 }
 
