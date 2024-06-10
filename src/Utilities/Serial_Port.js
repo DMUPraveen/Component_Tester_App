@@ -1,6 +1,13 @@
 
-export async function create_serial_port(baud_rate = 115200) {
-    const port = await navigator.serial.requestPort();
+export async function create_serial_port(baud_rate = 115200, vendor_id = null) {
+    let port = null
+    if (vendor_id == null) {
+
+        port = await navigator.serial.requestPort();
+    }
+    else {
+        port = await navigator.serial.requestPort({ filters: [{ usbVendorId: vendor_id }] });
+    }
     await port.open({ baudRate: baud_rate });
     return port;
 }
