@@ -3,28 +3,18 @@ import { useEffect } from "react";
 import { useState } from "react";
 import DrawChart from "../Utilities/Draw_Chart";
 import { SerialPortContext } from "../Pages/Parent";
-import { read_serial_port } from "../Utilities/Serial_Port";
+import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 
 export default function Oscilloscope() {
     const canvasRef = useRef(null);
-    const x_val = Array.from({ length: 100 }, (_, i) => i - 100);
-    const chartref = useRef(null);
+    const x_val = Array.from({ length: 1024 }, (_, i) => i - 100);
+    const chartRef = useRef(null);
     const { port, setSerialPort } = useContext(SerialPortContext);
     const [reader, setReader] = useState(null);
-
-    function update_function() {
-        const periodic = setInterval(() => {
-            if (chartref.current == null) return;
-            let y_val = Array.from({ length: 100 }, (_, i) => Math.random() / 10);
-            chartref.current.data.labels = x_val;
-            chartref.current.data.datasets[0].data = y_val;
-            chartref.current.update('none');
-        }, 1);
-        return () => clearInterval(periodic);
-    }
-
+    const data_buffer = useRef(new Uint8Array(new ArrayBuffer(1024 * 2)));
 
     function start_serial_reader() {
+
         (async () => {
             if (port != null) {
                 let new_reader = await port.readable.getReader();
@@ -45,21 +35,35 @@ export default function Oscilloscope() {
     function read_serial() {
         const func = async () => {
             if (reader == null) return;
-            const { value, done } = await reader.read();
-            let data = new Uint8Array(value.buffer);
-            let y_val = Array.from(data, (byte) => byte);
-            let x_val = Array.from({ length: y_val.length }, (_, i) => i);
-            chartref.current.data.labels = x_val;
-            chartref.current.data.datasets[0].data = y_val;
-            chartref.current.update('none');
-            setTimeout(read_serial, 100);
+            let offset = 0;
+            await write_serial_port(port, new Uint8Array([73]));
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) {
+                    console.log("Reader Done");
+                }
+                data_buffer.current.set(new Uint8Array(value.buffer), offset);
+                offset += value.buffer.byteLength;
+                if (offset >= 1024 * 2) {
+                    console.log(offset);
+                    break;
+                }
+            }
+            let data = new Uint16Array(data_buffer.current.buffer);
+            console.log(data.length);
+            let y_val = Array.from(data, (byte) => byte / 4096 * 3.3);
+            let x_val = Array.from({ length: 1024 }, (_, i) => i);
+            chartRef.current.data.labels = x_val;
+            chartRef.current.data.datasets[0].data = y_val;
+            chartRef.current.update('none');
+            setTimeout(read_serial, 1);
         }
         func();
     }
     useEffect(start_serial_reader, [port]);
     // useEffect(update_function, []);
     useEffect(read_serial, [reader]);
-    useEffect(() => { return DrawChart(canvasRef, x_val, x_val, chartref) });
+    useEffect(() => { return DrawChart(canvasRef, x_val, Array.from({ length: x_val.length }, (_, i) => 0), chartRef, 3.3) });
     return (
         <canvas ref={canvasRef}></canvas>
     )
