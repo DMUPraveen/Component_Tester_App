@@ -3,12 +3,13 @@ import { SerialPortContext } from "../Pages/Parent";
 import { useContext } from "react";
 import { create_serial_port, destroy_serial_port } from "../Utilities/Serial_Port";
 const ESP_USB_VENDOR_ID = 4292;
+const STM32_VID = 1155;
 
 export default function Navbar() {
     const { port, setPort } = useContext(SerialPortContext);
     function connect() {
         if (port == null) {
-            create_serial_port(115200, ESP_USB_VENDOR_ID).then((port) => {
+            create_serial_port(115200, [ESP_USB_VENDOR_ID, STM32_VID]).then((port) => {
                 console.log(port.getInfo())
                 setPort(port);
             });

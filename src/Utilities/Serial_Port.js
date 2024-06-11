@@ -1,12 +1,15 @@
 
-export async function create_serial_port(baud_rate = 115200, vendor_id = null) {
+export async function create_serial_port(baud_rate = 115200, vendor_ids = null) {
     let port = null
-    if (vendor_id == null) {
+    if (vendor_ids == null) {
 
         port = await navigator.serial.requestPort();
     }
     else {
-        port = await navigator.serial.requestPort({ filters: [{ usbVendorId: vendor_id }] });
+        console.log(vendor_ids);
+        let filters = Array.from(vendor_ids, (id, _) => { return { usbVendorId: id } });
+        console.log(filters);
+        port = await navigator.serial.requestPort({ filters: filters });
     }
     await port.open({ baudRate: baud_rate });
     return port;
@@ -51,7 +54,6 @@ export async function read_serial_port(port, buffer, size) {
         }
         // console.log("returning")
         reader.releaseLock();
-        console.log(buffer);
         return buffer
     }
     catch (error) {
@@ -69,3 +71,31 @@ export async function write_serial_port(port, data) {
     writer.releaseLock();
 }
 
+export async function clear_serial_port(port) {
+    let reader = null;
+    try {
+        reader = await port.readable.getReader();
+    }
+    catch (error) {
+        console.error(error);
+        return;
+    }
+    let reader_cancelled = false;
+    while (true) {
+        const timer = setTimeout(async () => {
+            await reader.cancel();
+            reader_cancelled = true;
+        }, 10);
+        const { value, done } = await reader.read(
+        );
+        if (reader_cancelled) {
+            break;
+        }
+        clearTimeout(timer);
+        if (done) {
+            break;
+        }
+        console.log(value)
+    }
+    await reader.releaseLock();
+}

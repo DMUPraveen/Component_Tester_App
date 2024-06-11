@@ -65,7 +65,7 @@ export default function Oscilloscope() {
     // useEffect(update_function, []);
     async function start_stop_oscilloscope() {
         if (port == null) {
-            const port_new = await create_serial_port(115200, STM32_VID);
+            const port_new = await create_serial_port(115200, [STM32_VID]);
             console.log(port_new.getInfo());
             setSerialPort(port_new);
             return;
