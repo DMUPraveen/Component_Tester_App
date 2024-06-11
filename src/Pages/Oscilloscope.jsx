@@ -46,7 +46,7 @@ export default function Oscilloscope() {
                 data_buffer.current.set(new Uint8Array(value.buffer), offset);
                 offset += value.buffer.byteLength;
                 if (offset >= 1024 * 2) {
-                    console.log(offset);
+                    // console.log(offset);
                     break;
                 }
             }

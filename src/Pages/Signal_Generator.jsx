@@ -1,9 +1,44 @@
 import { useContext, useState } from 'react';
 import function_generator_logo from '../assets/function_generator_logo.png'
-import { arbitrary_wave, cosine_wave } from '../Utilities/Signal_Generator_func';
+import { arbitrary_wave, arbitrary_wave_extended, clamper, cosine_wave } from '../Utilities/Signal_Generator_func';
 import { SerialPortContext } from './Parent';
 import { read_serial_port, write_serial_port } from '../Utilities/Serial_Port';
 
+
+
+
+function SetupArbitraryWave() {
+    const [frequency, setFrequency] = useState(0);
+    const [funcText, setFuncText] = useState("(x) => { return 0.5 * Math.sin(x * 2 * Math.PI);}");
+    const { port, setPort } = useContext(SerialPortContext)
+    return (
+        <>
+            <div className="font-black text-2xl col-span-2">Frequency (Hz) </div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <input type="number"
+                className="border-2 font-bold text-2xl border-zinc-950 col-span-2"
+                onChange={(e) => { setFrequency(e.target.value) }}
+                defaultValue={frequency}
+            />
+            <div className="font-black text-2xl col-span-2">Function</div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <textarea
+                className="border-2 font-bold text-s border-zinc-950 col-span-2 row-span-4 place-self-stretch"
+                onChange={(e) => { setFuncText(e.target.value) }}
+                defaultValue={"(x) => {return 0.5 * Math.sin(x * 2 * Math.PI);}"}
+            />
+            <button className="w-2/3 font-bold 
+            rounded-lg text-2xl text-center 
+             text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
+                onClick={async () => {
+                    let func = eval(funcText);
+                    let buffer = arbitrary_wave_extended(parseInt(frequency), func);
+                    await write_serial_port(port, buffer);
+                }}
+            >Generate</button>
+        </>
+    )
+}
 
 function SetupSinewave() {
     const [frequency, setFrequency] = useState(0);
@@ -33,17 +68,6 @@ function SetupSinewave() {
                     if (port == null) return console.log("Port is null");
                     let buffer = cosine_wave(parseInt(frequency), parseInt(amplitude));
                     await write_serial_port(port, buffer);
-                    setTimeout(
-                        () => {
-                            let buffer = new ArrayBuffer(1);
-                            read_serial_port(port, buffer).then(
-                                (data) => {
-                                    console.log(data)
-                                }
-                            )
-                        }
-                        , 1000
-                    )
                 }}
             >Generate</button>
             <button
@@ -54,19 +78,9 @@ function SetupSinewave() {
                 onClick={async () => {
                     if (port == null) return console.log("Port is null");
                     let buffer = arbitrary_wave(parseInt(frequency), new Array(400));
+                    buffer = arbitrary_wave_extended(parseInt(frequency), (x) => 0.5 * Math.sin(x * 2 * Math.PI));
                     console.log(buffer);
                     await write_serial_port(port, buffer);
-                    setTimeout(
-                        () => {
-                            let buffer = new ArrayBuffer(1);
-                            read_serial_port(port, buffer).then(
-                                (data) => {
-                                    console.log(data)
-                                }
-                            )
-                        }
-                        , 1000
-                    )
                 }}
             >
                 Hello
@@ -81,6 +95,14 @@ function ConditionalOptions({ signalType }) {
         return (
             <>
                 <SetupSinewave />
+            </>
+        )
+    }
+
+    if (signalType === 'Arbitrary') {
+        return (
+            <>
+                <SetupArbitraryWave />
             </>
         )
     }
@@ -107,6 +129,7 @@ function SignalGenerator() {
                     <option value="Square">Square</option>
                     <option value="Triangle">Triangle</option>
                     <option value="Sawtooth">Sawtooth</option>
+                    <option value="Arbitrary">Arbitrary</option>
                 </select>
                 <ConditionalOptions signalType={signal} />
             </div>
