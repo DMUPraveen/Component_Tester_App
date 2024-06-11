@@ -16,14 +16,15 @@ export function arbitrary_wave(freq, wave) {
     //create an array of bytes first byte is 1 second byte is 2 next four bytes is the frequency
     // the next bytes is the wave values as uint8
     //thats it
-    wave = new Array(400);
-    for (let i = 0; i < 400; i++) { wave[i] = Math.floor(Math.abs(Math.sin(i / 400 * 2 * Math.PI)) * 255) };
+    const wave_sample_length = 2048;
+    wave = new Array(wave_sample_length);
+    for (let i = 0; i < wave_sample_length; i++) { wave[i] = Math.floor(Math.abs(Math.sin(i / wave_sample_length * 2 * Math.PI)) * 120) };
     console.log(wave);
     let buffer = new ArrayBuffer(10 + wave.length);
     let view = new DataView(buffer);
     view.setUint8(0, 1);
     view.setUint8(1, 2);
-    view.setUint32(2, 0, true);
+    view.setUint32(2, freq, true);
     view.setUint32(6, wave.length, true);
     //no amplitude
     for (let i = 0; i < wave.length; i++) {
