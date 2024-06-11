@@ -59,7 +59,7 @@ export default function Oscilloscope() {
             chartRef.current.data.labels = x_val;
             chartRef.current.data.datasets[0].data = y_val;
             chartRef.current.update('none');
-            setTimeout(read_serial, 1);
+            setTimeout(read_serial, 100);
         }
         func();
     }
