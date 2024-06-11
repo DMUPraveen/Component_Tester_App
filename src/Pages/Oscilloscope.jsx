@@ -5,6 +5,7 @@ import DrawChart from "../Utilities/Draw_Chart";
 import { SerialPortContext } from "../Pages/Parent";
 import { create_serial_port, destroy_serial_port, read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import { requestPermission } from "@tauri-apps/api/notification";
+import { findEdgeAndShift } from "../Utilities/Analysis";
 const STM32_VID = 1155;
 export default function Oscilloscope() {
     const canvasRef = useRef(null);
@@ -54,6 +55,7 @@ export default function Oscilloscope() {
             // console.log(data.length);
             let y_val = Array.from(data, (byte) => byte / 4096 * 3.3);
             let x_val = Array.from({ length: 1024 }, (_, i) => i);
+            y_val = findEdgeAndShift(y_val, 2.5, "rising");
             chartRef.current.data.labels = x_val;
             chartRef.current.data.datasets[0].data = y_val;
             chartRef.current.update('none');
