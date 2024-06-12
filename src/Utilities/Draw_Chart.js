@@ -56,3 +56,29 @@ export default function DrawChart(canvasInstance, x_val, y_val, chartref, y_scal
     chartref.current = chart;
     return () => { console.log("Destroying the previous chart"); chart.destroy(); }
 }
+
+
+export function DrawChartScatter(canvasInstance, x_val, y_val, chartref) {
+    if (canvasInstance.current == null) {
+        return () => { };
+    }
+    const data = {
+        datasets: [{
+            label: "IV - Characteristics",
+            backgroundColor: '#000000',
+            data: [],
+        }],
+    };
+    let chart = null;
+    chart = new Chart(
+        canvasInstance.current,
+        {
+            type: 'scatter',
+            data: data
+        }
+    );
+
+
+    chartref.current = chart;
+    return () => { console.log("Destroying the previous chart"); chart.destroy(); }
+}

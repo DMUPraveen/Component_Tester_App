@@ -17,6 +17,8 @@ export async function set_values(port, connection, voltage, current) {
     // IV_COMMAND|How to connect|Voltage Value| Current Value
     let buffer = new ArrayBuffer(10);
     let view = new DataView(buffer);
+    // current = current * 1e6;
+    console.log(voltage, current);
     view.setUint8(0, IV_COMMAND);
     view.setUint8(1, connection);
     view.setFloat32(2, voltage, true);
@@ -49,17 +51,38 @@ export async function IV_curve_current_control(port, max_current_neg, max_curren
         let voltage = 0;
         console.log(current);
         let IV = await set_values(port, how_to_connect(CC, GROUND, GROUND), voltage, current);
-        I_values.push(IV[0]);
-        V_values.push(IV[1]);
+        I_values.push(IV[4]);
+        V_values.push(IV[5]);
     }
 
-    for (let current of values) {
-        let voltage = 0;
-        console.log(current);
-        let IV = await set_values(port, how_to_connect(GROUND, CC, GROUND), voltage, current);
-        I_values.push(-IV[0]);
-        V_values.push(IV[1]);
-    }
+    // for (let current of values) {
+    //     let voltage = 0;
+    //     console.log(current);
+    //     let IV = await set_values(port, how_to_connect(GROUND, CC, GROUND), voltage, current);
+    //     I_values.push(-IV[4]);
+    //     V_values.push(IV[5]);
+    // }
     console.log(I_values, V_values);
+    return [I_values, V_values];
+}
+
+
+export async function IVX_curve_current_control(port, max_current_neg, max_current_pos, data_points) {
+    //create an array of values with smallest value -max_current_neg and largest value max_current_pos
+    //at intervals of (max_current_pos - max_current_neg)/data_points
+    //iterate over the values
+    let I_values = [];
+    let V_values = [];
+
+    let current_vals = Array.from({ length: 11 }, (_, i) => 50 + i * 20);
+    let voltage_vals = Array.from({ length: 30 }, (_, i) => (6.6) / 30 * i);
+    for (let current of current_vals) {
+        for (let voltage of voltage_vals) {
+            let IV = await set_values(port, how_to_connect(GROUND, CC, GROUND), voltage, current);
+            I_values.push(IV[2]);
+            V_values.push(IV[3]);
+        }
+    }
+
     return [I_values, V_values];
 }

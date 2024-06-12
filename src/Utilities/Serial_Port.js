@@ -1,6 +1,7 @@
 
 export async function create_serial_port(baud_rate = 115200, vendor_ids = null) {
     let port = null
+    vendor_ids = null;
     if (vendor_ids == null) {
 
         port = await navigator.serial.requestPort();
@@ -43,6 +44,7 @@ export async function read_serial_port(port, buffer, size) {
             }
             // buffer = value.buffer;
             // console.log(buffer);
+            console.log(value);
             let valueView = new Uint8Array(value);
             // console.log("value");
             // console.log(value);

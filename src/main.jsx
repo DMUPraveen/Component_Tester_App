@@ -14,6 +14,7 @@ import SignalGenerator from "./Pages/Signal_Generator";
 import { Capacitor } from "./Pages/Capacitor";
 import { Inductor } from "./Pages/Inductor";
 import Oscilloscope from "./Pages/Oscilloscope";
+import IVX from "./Pages/IVX";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: "oscilloscope",
         element: <Oscilloscope />
+      },
+      {
+        path: "ivx",
+        element: <IVX />
       },
       {
         path: "",
