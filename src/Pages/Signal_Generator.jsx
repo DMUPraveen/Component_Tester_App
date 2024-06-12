@@ -70,7 +70,7 @@ function SetupSinewave() {
                     await write_serial_port(port, buffer);
                 }}
             >Generate</button>
-            <button
+            {/* <button
                 className="w-2/3 font-bold 
             rounded-lg text-2xl text-center 
              text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
@@ -84,7 +84,7 @@ function SetupSinewave() {
                 }}
             >
                 Hello
-            </button>
+            </button> */}
         </>
     )
 }

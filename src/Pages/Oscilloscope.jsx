@@ -80,18 +80,22 @@ export default function Oscilloscope() {
     useEffect(read_serial, [reader]);
     useEffect(() => { return DrawChart(canvasRef, x_val, Array.from({ length: x_val.length }, (_, i) => 0), chartRef, 3.3) });
     return (
-        <div className="flex flex-col items-center  p-3 bg-zinc-50 h-screen">
-            <button
-                className="font-black text-2xl drop-shadow-l bg-white p-3 border-2 border-zinc-500"
-                onClick={start_stop_oscilloscope}
 
-            >
-                {(port == null) ? "Start" : "Stop"}
-            </button>
-            <div className="w-10/12 p-3">
-                <canvas ref={canvasRef} ></canvas>
+        <>
+            <div className="font-black text-4xl p-3"> Oscilloscope </div>
+            <div className="flex flex-col items-center  p-3 bg-zinc-50 h-screen">
+                <button
+                    className="font-black text-2xl drop-shadow-l bg-white p-3 border-2 border-zinc-500"
+                    onClick={start_stop_oscilloscope}
+
+                >
+                    {(port == null) ? "Start" : "Stop"}
+                </button>
+                <div className="w-10/12 p-3">
+                    <canvas ref={canvasRef} ></canvas>
+                </div>
             </div>
-        </div>
+        </>
 
     )
 }
