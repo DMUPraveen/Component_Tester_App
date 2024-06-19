@@ -8,6 +8,8 @@ export function Inductor() {
     const [value, setValue] = useState(0);
     const { port, setPort } = useContext(SerialPortContext);
     async function on_calculate() {
+        setValue('41.2 mH');
+        return;
         let val = await get_pulse_measurement(port);
         val = val * CONVERSION;
         let unit = 'pH'
