@@ -7,6 +7,28 @@ import { create_serial_port, destroy_serial_port, read_serial_port, write_serial
 import { requestPermission } from "@tauri-apps/api/notification";
 import { findEdgeAndShift } from "../Utilities/Analysis";
 const STM32_VID = 1155;
+function VerticalSlider({ onChange }) {
+
+    if (onChange == null) {
+        onChange = (x) => { console.log(x); };
+    }
+    return (
+        <div className="flex flex-col items-center h-5/6">
+            <input
+                type="range"
+                min="-10"
+                max="10"
+                onChange={onChange}
+                className="w-2 h-full accent-zinc-950 rounded-lg"
+                style={{
+                    writingMode: 'bt-lr',
+                    WebkitAppearance: 'slider-vertical',
+                    appearance: 'slider-vertical',
+                }}
+            />
+        </div>
+    );
+}
 export default function Oscilloscope() {
     const canvasRef = useRef(null);
     const x_val = Array.from({ length: 1024 }, (_, i) => i);
@@ -83,7 +105,7 @@ export default function Oscilloscope() {
 
         <>
             <div className="font-black text-4xl p-3"> Oscilloscope </div>
-            <div className="flex flex-col items-center  p-3 bg-zinc-50 h-screen">
+            <div className="flex flex-col items-center  p-3  h-screen ">
                 <button
                     className="font-black text-2xl drop-shadow-l bg-white p-3 border-2 border-zinc-500"
                     onClick={start_stop_oscilloscope}
@@ -91,10 +113,14 @@ export default function Oscilloscope() {
                 >
                     {(port == null) ? "Start" : "Stop"}
                 </button>
-                <div className="w-10/12 p-3">
-                    <canvas ref={canvasRef} ></canvas>
+                <div className="flex flex-row items-center justify-center  grow self-stretch">
+                    <VerticalSlider />
+                    <div className="w-10/12 p-3">
+                        <canvas ref={canvasRef} ></canvas>
+                    </div>
                 </div>
             </div>
+            {/* </div> */}
         </>
 
     )
