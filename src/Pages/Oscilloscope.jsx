@@ -73,13 +73,13 @@ function InformationPanel({ triggerLevel, triggerType, setTriggerType, windowLen
             <div>
                 <p className="font-black">Vertical Position:{mid} </p>
                 <input type="range"
-                    min="0" max={MAX_TRIGGER_LEVEL} step="0.01"
+                    min="0" max={MAX_TRIGGER_LEVEL} step="0.01" value={mid}
                     className="border-2 border-zinc-950"
                     onChange={(e) => { setMidLimit(e, range) }} />
 
                 <p className="font-black">Vertical Scale Range:{range} </p>
                 <input type="range"
-                    min="0.01" max={MAX_TRIGGER_LEVEL} step="0.01"
+                    min="0.01" max={MAX_TRIGGER_LEVEL} step="0.01" value={range}
                     className="border-2 border-zinc-950"
                     onChange={(e) => { setRangeLimit(e, mid) }} />
             </div>
