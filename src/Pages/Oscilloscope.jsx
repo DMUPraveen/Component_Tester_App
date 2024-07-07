@@ -31,22 +31,22 @@ function VerticalSlider({ onChange, verticalScale }) {
     );
 }
 function InformationPanel({ triggerLevel, triggerType, setTriggerType, windowLengthRef, verticalScaleRef, setVerticalScale }) {
-    let [mid, setMid] = useState(MAX_TRIGGER_LEVEL / 2);
+    let [start, setStart] = useState(0);
     let [range, setRange] = useState(MAX_TRIGGER_LEVEL);
 
-    const setLimits = (mid, range) => {
-        console.log(mid, range);
-        setVerticalScale([mid - range / 2, mid + range / 2]);
+    const setLimits = (start, range) => {
+        // console.log(mid, range);
+        setVerticalScale([start, start + range]);
     }
     const setMidLimit = (e, range) => {
         let val = parseFloat(e.target.value);
-        setMid(val);
+        setStart(val);
         setLimits(val, range);
     }
-    const setRangeLimit = (e, mid) => {
+    const setRangeLimit = (e, start) => {
         let val = parseFloat(e.target.value);
         setRange(val);
-        setLimits(mid, val);
+        setLimits(start, val);
     }
     const toggleTriggerType = () => {
         if (triggerType == "rising") {
@@ -71,9 +71,9 @@ function InformationPanel({ triggerLevel, triggerType, setTriggerType, windowLen
                 </select>
             </div>
             <div>
-                <p className="font-black">Vertical Position:{mid} </p>
+                <p className="font-black">Vertical Position:{start} </p>
                 <input type="range"
-                    min="0" max={MAX_TRIGGER_LEVEL} step="0.01" value={mid}
+                    min="0" max={MAX_TRIGGER_LEVEL} step="0.01" value={start}
                     className="border-2 border-zinc-950"
                     onChange={(e) => { setMidLimit(e, range) }} />
 
@@ -81,7 +81,7 @@ function InformationPanel({ triggerLevel, triggerType, setTriggerType, windowLen
                 <input type="range"
                     min="0.01" max={MAX_TRIGGER_LEVEL} step="0.01" value={range}
                     className="border-2 border-zinc-950"
-                    onChange={(e) => { setRangeLimit(e, mid) }} />
+                    onChange={(e) => { setRangeLimit(e, start) }} />
             </div>
         </div>
     )
