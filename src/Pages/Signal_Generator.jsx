@@ -5,6 +5,83 @@ import { SerialPortContext } from './Parent';
 import { read_serial_port, write_serial_port } from '../Utilities/Serial_Port';
 const MAX_AMPLITUDE = 3.3
 
+
+function SetupTriangleWave() {
+    const [frequency, setFrequency] = useState(0);
+    const [amplitude, setAmplitude] = useState(0);
+    const { port, setPort } = useContext(SerialPortContext)
+    const triangle_func = (x) => {
+        let value = clamper(amplitude / MAX_AMPLITUDE)
+        if (x < 0.5) {
+            return 2 * value * x;
+        }
+        return 2 * value * (1 - x);
+    }
+    return (
+        <>
+            <div className="font-black text-2xl col-span-2">Frequency (Hz) </div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <input type="number"
+                className="border-2 font-bold text-2xl border-zinc-950 col-span-2"
+                onChange={(e) => { setFrequency(e.target.value) }}
+                defaultValue={frequency}
+            />
+            <div className="font-black text-2xl col-span-2">Amplitude (V)</div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <input type="number"
+                className="border-2 font-bold text-2xl border-zinc-950 col-span-2"
+                onChange={(e) => { setAmplitude(e.target.value) }}
+                defaultValue={frequency}
+            />
+            <button className="w-2/3 font-bold 
+            rounded-lg text-2xl text-center 
+             text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
+                onClick={async () => {
+                    let buffer = arbitrary_wave_extended(parseInt(frequency), triangle_func);
+                    await write_serial_port(port, buffer);
+                }}
+            >Generate</button>
+        </>
+    )
+
+}
+
+function SetupSawWave() {
+    const [frequency, setFrequency] = useState(0);
+    const [amplitude, setAmplitude] = useState(0);
+    const { port, setPort } = useContext(SerialPortContext)
+    const saw_func = (x) => {
+        let value = clamper(amplitude / MAX_AMPLITUDE)
+        return value * x;
+    }
+    return (
+        <>
+            <div className="font-black text-2xl col-span-2">Frequency (Hz) </div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <input type="number"
+                className="border-2 font-bold text-2xl border-zinc-950 col-span-2"
+                onChange={(e) => { setFrequency(e.target.value) }}
+                defaultValue={frequency}
+            />
+            <div className="font-black text-2xl col-span-2">Amplitude (V)</div>
+            <div className="font-black text-2xl col-span-1">: </div>
+            <input type="number"
+                className="border-2 font-bold text-2xl border-zinc-950 col-span-2"
+                onChange={(e) => { setAmplitude(e.target.value) }}
+                defaultValue={frequency}
+            />
+            <button className="w-2/3 font-bold 
+            rounded-lg text-2xl text-center 
+             text-white bg-zinc-950 hover:bg-slate-700 col-span-2"
+                onClick={async () => {
+                    let buffer = arbitrary_wave_extended(parseInt(frequency), saw_func);
+                    await write_serial_port(port, buffer);
+                }}
+            >Generate</button>
+        </>
+    )
+
+}
 function SetupSquareWave() {
     const [frequency, setFrequency] = useState(0);
     const [amplitude, setAmplitude] = useState(0);
@@ -136,6 +213,16 @@ function ConditionalOptions({ signalType }) {
     if (signalType === 'Square') {
         return (
             <SetupSquareWave />
+        )
+    }
+    if (signalType === 'Triangle') {
+        return (
+            <SetupTriangleWave />
+        )
+    }
+    if (signalType === 'Sawtooth') {
+        return (
+            <SetupSawWave />
         )
     }
     return (
