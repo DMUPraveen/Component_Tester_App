@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import function_generator_logo from '../assets/function_generator_logo.png'
-import { arbitrary_wave, arbitrary_wave_extended, clamper, cosine_wave } from '../Utilities/Signal_Generator_func';
+import { arbitrary_wave_extended, clamper, cosine_wave } from '../Utilities/Signal_Generator_func';
 import { SerialPortContext } from './Parent';
 import { read_serial_port, write_serial_port } from '../Utilities/Serial_Port';
 const MAX_AMPLITUDE = 3.3
