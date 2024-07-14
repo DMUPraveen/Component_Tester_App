@@ -6,7 +6,7 @@ export function cosine_wave(freq, amplitude) {
     //create an array of bytes first byte is 1 second byte is 0 next four bytes is the frequency
     // in little endian format and final byte is the amplitude
 
-    let buffer = new ArrayBuffer(7);
+    let buffer = new ArrayBuffer(6);
     let view = new DataView(buffer);
     view.setUint8(0, SINE_WAVE_COMMAND);
     view.setUint32(1, freq, true);
