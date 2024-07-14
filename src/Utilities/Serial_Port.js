@@ -1,7 +1,7 @@
 
 export async function create_serial_port(baud_rate = 115200, vendor_ids = null) {
     let port = null
-    vendor_ids = null;
+    // vendor_ids = null;
     if (vendor_ids == null) {
 
         port = await navigator.serial.requestPort();

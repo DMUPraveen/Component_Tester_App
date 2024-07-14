@@ -9,7 +9,7 @@ export default function Navbar() {
     const { port, setPort } = useContext(SerialPortContext);
     function connect() {
         if (port == null) {
-            create_serial_port(115200, [ESP_USB_VENDOR_ID, STM32_VID]).then((port) => {
+            create_serial_port(115200, [STM32_VID]).then((port) => {
                 console.log(port.getInfo())
                 setPort(port);
             });
