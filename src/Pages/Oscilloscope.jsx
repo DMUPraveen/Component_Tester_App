@@ -91,7 +91,7 @@ export default function Oscilloscope() {
     const canvasRef = useRef(null);
     const x_val = Array.from({ length: 1024 }, (_, i) => i);
     const chartRef = useRef(null);
-    const [port, setSerialPort] = useState(null);
+    // const [port, setSerialPort] = useState(null);
     const [reader, setReader] = useState(null);
     const data_buffer = useRef(new Uint8Array(new ArrayBuffer(1024 * 2)));
     const [triggerLevel, setTriggerLevelProto] = useState(2.5);
@@ -102,6 +102,8 @@ export default function Oscilloscope() {
     const [verticalScale, setVerticalScaleProto] = useState([0, 3.3]);
     const verticalScaleRef = useRef(verticalScale);
     // const [windowLength, setWindowLength] = us(1024);
+    const startStop = useRef(false);
+    const { port, setPort } = useContext(SerialPortContext)
     function setTriggerLevel(newLevel) {
         triggerRef.current = newLevel;
         setTriggerLevelProto(newLevel);
@@ -138,6 +140,12 @@ export default function Oscilloscope() {
     function read_serial() {
         const func = async () => {
             if (reader == null) return;
+            if (startStop.current == false) {
+                await reader.cancel();
+                setReader(null);
+                return;
+            }
+            if (reader == null) return;
             let offset = 0;
             await write_serial_port(port, new Uint8Array([73]));
             while (true) {
@@ -170,19 +178,26 @@ export default function Oscilloscope() {
         }
         func();
     }
-    useEffect(start_serial_reader, [port]);
+    // useEffect(start_serial_reader, [port]);
     // useEffect(update_function, []);
     async function start_stop_oscilloscope() {
         if (port == null) {
-            const port_new = await create_serial_port(115200, [STM32_VID]);
-            console.log(port_new.getInfo());
-            setSerialPort(port_new);
+            // const port_new = await create_serial_port(115200, [STM32_VID]);
+            // console.log(port_new.getInfo());
+            // setSerialPort(port_new);
+            setReader(null);
             return;
         }
-        await reader.cancel();
-        destroy_serial_port(port);
-        setSerialPort(null);
-        setReader(null);
+        if (reader == null) {
+            startStop.current = true;
+            start_serial_reader();
+            return;
+        }
+        // await reader.cancel();
+        // destroy_serial_port(port);
+        // setSerialPort(null);
+        // setReader(null);
+        startStop.current = false
     }
     useEffect(read_serial, [reader]);
     useEffect(() => { return DrawChart(canvasRef, x_val, Array.from({ length: x_val.length }, (_, i) => 0), chartRef, 3.3) });
@@ -196,7 +211,7 @@ export default function Oscilloscope() {
                     onClick={start_stop_oscilloscope}
 
                 >
-                    {(port == null) ? "Start" : "Stop"}
+                    {(reader == null) ? "Start" : "Stop"}
                 </button>
                 <div className="flex flex-row items-center justify-center gap-3 grow self-stretch">
                     <InformationPanel triggerLevel={triggerLevel} triggerType={triggerType} setTriggerType={setTriggerType} windowLengthRef={windowLengthRef} verticalScaleRef={verticalScaleRef} setVerticalScale={setVerticalScale} />
