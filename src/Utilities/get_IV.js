@@ -95,8 +95,8 @@ export async function IVX_curve_current_control(port, max_current_neg, max_curre
 export async function IVX_control(port, max_current_mA, min_current_mA, max_voltage_V, min_voltage_V, data_points_I, data_points_IV) {
     let I_values = [];
     let V_values = [];
-    let current_vals = Array.from({ length: data_points }, (_, i) => min_current_mA + (max_current_mA - min_current_mA) / data_points_I * i);
-    let voltage_vals = Array.from({ length: 30 }, (_, i) => min_voltage_V + (max_voltage_V - min_voltage_V) / data_points_IV * i);
+    let current_vals = Array.from({ length: data_points_I }, (_, i) => min_current_mA + (max_current_mA - min_current_mA) / data_points_I * i);
+    let voltage_vals = Array.from({ length: data_points_IV }, (_, i) => min_voltage_V + (max_voltage_V - min_voltage_V) / data_points_IV * i);
     for (let current of current_vals) {
         for (let voltage of voltage_vals) {
             let IV = await set_values(port, how_to_connect(GROUND, CC, GROUND), voltage, current);
