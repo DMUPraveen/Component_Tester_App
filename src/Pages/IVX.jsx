@@ -68,13 +68,13 @@ export default function IVX() {
                 className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
                 onClick={async () => {
 
-                    let minimum_current_ma = simple_clamp(currentMinUA / 1000, 0, 5);
-                    let maximum_current_ma = simple_clamp(currentMaxUA / 1000, 0, 5);
+                    let minimum_current_ma = simple_clamp(currentMinUA / 1000, 0, 1);
+                    let maximum_current_ma = simple_clamp(currentMaxUA / 1000, 0, 1);
                     let minimum_voltage_V = simple_clamp(voltageMinUA, 0, 10);
                     let maximum_voltage_V = simple_clamp(voltageMaxUA, 0, 10);
 
                     // const [x_vals, y_vals] = await IVX_curve_current_control(port, 0, 5, 100);
-                    const [x_vals, y_vals] = await IVX_control(port, maximum_current_ma, minimum_current_ma, maximum_voltage_V, minimum_voltage_V, 5, 100);
+                    const [x_vals, y_vals] = await IVX_control(port, maximum_current_ma, minimum_current_ma, maximum_voltage_V, minimum_voltage_V, 5, 10);
 
                     //sort y_vals using the x_vals as the key
                     let paired = x_vals.map((x, i) => [x, y_vals[i]]);

@@ -68,6 +68,8 @@ export async function IV_curve_current_control(port, max_current_neg, max_curren
     //     V_values.push(IV[5]);
     // }
     console.log(I_values, V_values);
+
+    await set_values(port, how_to_connect(GROUND, CC, GROUND), 0, 0);
     return [I_values, V_values];
 }
 
@@ -89,6 +91,7 @@ export async function IVX_curve_current_control(port, max_current_neg, max_curre
         }
     }
 
+    await set_values(port, how_to_connect(GROUND, CC, GROUND), 0, 0);
     return [I_values, V_values];
 }
 
@@ -104,6 +107,7 @@ export async function IVX_control(port, max_current_mA, min_current_mA, max_volt
             V_values.push(IV[3]);
         }
     }
+    await set_values(port, how_to_connect(GROUND, CC, GROUND), 0, 0);
 
     return [I_values, V_values];
 }

@@ -4,7 +4,6 @@ import { useContext } from "react";
 import { create_serial_port, destroy_serial_port } from "../Utilities/Serial_Port";
 const ESP_USB_VENDOR_ID = 4292;
 const STM32_VID = 1155;
-
 export default function Navbar() {
     const { port, setPort } = useContext(SerialPortContext);
     function connect() {
@@ -29,7 +28,7 @@ export default function Navbar() {
                     <Link to="/about">About</Link>
                 </li>
                 <li className="w-full"></li>
-                <li onClick={connect}><button> {(port == null) ? "🗲" : "⬜"}</button></li>
+                <li onClick={connect} className=""><button> {(port == null) ? "🗲" : "⬜"}</button></li>
             </ul>
         </nav>
     );
