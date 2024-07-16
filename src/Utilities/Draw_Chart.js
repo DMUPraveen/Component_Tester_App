@@ -64,7 +64,7 @@ export function DrawChartScatter(canvasInstance, x_val, y_val, chartref) {
     }
     const data = {
         datasets: [{
-            label: "IV - Characteristics",
+            label: "",
             backgroundColor: '#000000',
             data: [],
         }],
