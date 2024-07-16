@@ -3,18 +3,9 @@ import { SerialPortContext } from "./Parent"
 import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import DrawChart, { DrawChartScatter } from '../Utilities/Draw_Chart'
 import { IV_curve_current_control } from "../Utilities/get_IV";
-
-ALLOWED_MAX_CURRENT_MA = 500;
-SAMPLES_IN_RANGE = 100;
-function simple_clamp(x, min, max) {
-    if (x < min) {
-        return min;
-    }
-    if (x > max) {
-        return max;
-    }
-    return x;
-}
+import { simple_clamp } from "../Utilities/utilities";
+const ALLOWED_MAX_CURRENT_MA = 500;
+const SAMPLES_IN_RANGE = 100;
 
 export default function IV() {
     const canvasRef = useRef(null);

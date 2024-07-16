@@ -4,7 +4,8 @@ import { SerialPortContext } from "./Parent"
 import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import DrawChart, { DrawChartScatter } from '../Utilities/Draw_Chart'
 import { IVX_curve_current_control } from "../Utilities/get_IV";
-
+import { simple_clamp } from "../Utilities/utilities";
+import { IVX_control } from "../Utilities/get_IV";
 
 export default function IVX() {
     const canvasRef = useRef(null);
@@ -12,25 +13,69 @@ export default function IVX() {
     const { port, setPort } = useContext(SerialPortContext);
     const x_val = Array.from({ length: 100 }, (_, i) => i - 100);
     useEffect(() => { return DrawChartScatter(canvasRef, x_val, x_val, chartref) });
-    const [currentRange, setCurrentRange] = useState(0);
+    const [currentMinUA, setCurrentMinUA] = useState(0);
+
+    const [currentMaxUA, setCurrentMaxUA] = useState(0);
+
+    const [voltageMinUA, setVoltageMinUA] = useState(0);
+
+    const [voltageMaxUA, setVoltageMaxUA] = useState(0);
+
     return (
         <div className="flex flex-col items-start gap-3 p-3">
-            <h1 className="font-black text-4xl ">IV-X Characteristics</h1>
+            <h1 className="font-black text-4xl ">IV-I Characteristics</h1>
             <div className="w-1/2">
                 <canvas ref={canvasRef} className="w-1/2"></canvas>
             </div>
             <div className="flex flex-row gap-3 items-center">
-                <p className="font-black text-2xl">Current X Max (uA)</p>
-                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"></input>
+                <p className="font-black text-l">Current X Max (uA)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
+                    value={currentMaxUA}
+                    onChange={
+                        (e) => { setCurrentMaxUA(e.target.value) }
+                    }
+                ></input>
             </div>
             <div className="flex flex-row gap-3 items-center">
-                <p className="font-black text-2xl">Voltage Max (V)</p>
-                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"></input>
+                <p className="font-black text-l">Current X Min (uA)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
+                    value={currentMinUA}
+                    onChange={
+                        (e) => { setCurrentMinUA(e.target.value) }
+                    }
+                ></input>
+            </div>
+            <div className="flex flex-row gap-3 items-center">
+                <p className="font-black text-l">Voltage Max   (V)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
+                    value={voltageMaxUA}
+                    onChange={
+                        (e) => { setVoltageMaxUA(e.target.value) }
+                    }
+                ></input>
+            </div>
+            <div className="flex flex-row gap-3 items-center">
+                <p className="font-black text-l">Voltage Min   (V)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
+                    value={voltageMinUA}
+                    onChange={
+                        (e) => { setVoltageMinUA(e.target.value) }
+                    }
+
+                ></input>
             </div>
             <button
-                className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
+                className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-l"
                 onClick={async () => {
-                    const [x_vals, y_vals] = await IVX_curve_current_control(port, 0, 5, 100);
+
+                    let minimum_current_ma = simple_clamp(currentMinUA / 1000, 0, 5);
+                    let maximum_current_ma = simple_clamp(currentMaxUA / 1000, 0, 5);
+                    let minimum_voltage_V = simple_clamp(voltageMinUA, 0, 10);
+                    let maximum_voltage_V = simple_clamp(voltageMaxUA, 0, 10);
+
+                    // const [x_vals, y_vals] = await IVX_curve_current_control(port, 0, 5, 100);
+                    const [x_vals, y_vals] = await IVX_control(port, maximum_current_ma, minimum_current_ma, maximum_voltage_V, minimum_voltage_V, 5, 100);
+
                     //sort y_vals using the x_vals as the key
                     let paired = x_vals.map((x, i) => [x, y_vals[i]]);
 
