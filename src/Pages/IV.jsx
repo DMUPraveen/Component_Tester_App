@@ -4,6 +4,17 @@ import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import DrawChart, { DrawChartScatter } from '../Utilities/Draw_Chart'
 import { IV_curve_current_control } from "../Utilities/get_IV";
 
+ALLOWED_MAX_CURRENT_MA = 500;
+SAMPLES_IN_RANGE = 100;
+function simple_clamp(x, min, max) {
+    if (x < min) {
+        return min;
+    }
+    if (x > max) {
+        return max;
+    }
+    return x;
+}
 
 export default function IV() {
     const canvasRef = useRef(null);
@@ -11,7 +22,8 @@ export default function IV() {
     const { port, setPort } = useContext(SerialPortContext);
     const x_val = Array.from({ length: 100 }, (_, i) => i - 100);
     useEffect(() => { return DrawChartScatter(canvasRef, x_val, x_val, chartref) });
-    const [currentRange, setCurrentRange] = useState(0);
+    const [currentMin, setCurrentMin] = useState(0);
+    const [currentMax, setCurrentMax] = useState(0);
     return (
         <div className="flex flex-col items-start gap-3 p-3">
             <h1 className="font-black text-4xl ">IV Characteristics</h1>
@@ -19,17 +31,31 @@ export default function IV() {
                 <canvas ref={canvasRef} className="w-1/2"></canvas>
             </div>
             <div className="flex flex-row gap-3 items-center">
-                <p className="font-black text-2xl">Current Min</p>
-                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"></input>
+                <p className="font-black text-2xl">Current Min (mA)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
+                    value={currentMin}
+                    onChange={
+                        (x) => setCurrentMin(x.target.value)
+                    }
+                >
+                </input>
             </div>
             <div className="flex flex-row gap-3 items-center">
-                <p className="font-black text-2xl">Current Max</p>
-                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"></input>
+                <p className="font-black text-2xl">Current Max (mA)</p>
+                <input className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
+                    value={currentMax}
+                    onChange={
+                        (x) => setCurrentMax(x.target.value)
+                    }
+                >
+                </input>
             </div>
             <button
                 className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
                 onClick={async () => {
-                    const [x_vals, y_vals] = await IV_curve_current_control(port, 0, 255, 100);
+                    let min_current = simple_clamp(currentMin, 0, ALLOWED_MAX_CURRENT_MA);
+                    let max_current = simple_clamp(currentMax, 0, ALLOWED_MAX_CURRENT_MA);
+                    const [x_vals, y_vals] = await IV_curve_current_control(port, min_current, max_current, SAMPLES_IN_RANGE);
                     //sort y_vals using the x_vals as the key
                     let paired = x_vals.map((x, i) => [x, y_vals[i]]);
 

@@ -51,7 +51,12 @@ export async function IV_curve_current_control(port, max_current_neg, max_curren
         let voltage = 0;
         console.log(current);
         let IV = await set_values(port, how_to_connect(CC, GROUND, GROUND), voltage, current);
-        I_values.push(IV[4]);
+        if (current < 1) {
+            I_values.push(current)
+        }
+        else {
+            I_values.push(IV[4])
+        }
         V_values.push(IV[5]);
     }
 
