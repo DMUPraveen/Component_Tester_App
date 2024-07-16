@@ -24,7 +24,7 @@ export function ToolGrid_General() {
         <div className="grid grid-cols-3 gap-4 justify-items-center h-2/6 content-center bg-zinc-150">
             <Tool tool_logo={IV_logo} tool_name="I-V" to="iv" />
             <Tool tool_logo={IVX_logo} tool_name="I-V X" to="ivx" />
-            <Tool tool_logo={bode_logo} tool_name="bode" />
+            <Tool tool_logo={bode_logo} tool_name="bode" to="bode" />
             <Tool tool_logo={function_generator_logo} tool_name="function generator" to="signalGenerator" />
             <Tool tool_logo={oscilloscope_logo} tool_name="Oscilloscope" to="Oscilloscope" />
             <Tool tool_logo={logic_analyzer_logo} tool_name="Logic Analyzer" />

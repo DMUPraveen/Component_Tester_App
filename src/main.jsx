@@ -15,6 +15,7 @@ import { Capacitor } from "./Pages/Capacitor";
 import { Inductor } from "./Pages/Inductor";
 import Oscilloscope from "./Pages/Oscilloscope";
 import IVX from "./Pages/IVX";
+import Bode from "./Pages/Bode";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "ivx",
         element: <IVX />
+      },
+      {
+        path: "bode",
+        element: <Bode />
       },
       {
         path: "",
