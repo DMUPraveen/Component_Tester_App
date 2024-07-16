@@ -30,6 +30,9 @@ export default function Bode() {
                     // chartref.current.data.datasets[0].data = Array.from(sorted_x_vals, (x, i) => { return { x: sorted_y_vals[i], y: sorted_x_vals[i] / 1000 }; })
                     // console.log(chartref.current.data);
                     // chartref.current.update();
+                    chartref.current.data.labels = frequencies;
+                    chartref.current.data.datasets[0].data = magnitudes;
+                    chartref.current.update();
                 }}> Take Measurement </button>
         </div >
     )
