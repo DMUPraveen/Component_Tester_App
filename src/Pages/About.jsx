@@ -1,7 +1,7 @@
 import Navbar from "../Components/Navbar";
-
+import AboutImage from "../assets/AboutImage.png";
 export default function About() {
     return (
-        <div>About!</div>
+        <img src={AboutImage} alt="About" className='' />
     )
 }
