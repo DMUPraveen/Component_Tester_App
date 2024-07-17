@@ -17,6 +17,7 @@ export async function create_serial_port(baud_rate = 115200, vendor_ids = null) 
 }
 
 export async function destroy_serial_port(port) {
+    await write_serial_port(port, new Uint8Array([183, 0]));
     await port.close();
 }
 
