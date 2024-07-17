@@ -3,7 +3,7 @@ import { SerialPortContext } from "./Parent"
 import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import DrawChart, { DrawChartScatter } from '../Utilities/Draw_Chart'
 import { IV_curve_current_control } from "../Utilities/get_IV";
-import { simple_clamp } from "../Utilities/utilities";
+import { green_led_off, green_led_on, simple_clamp } from "../Utilities/utilities";
 const ALLOWED_MAX_CURRENT_MA = 500;
 const SAMPLES_IN_RANGE = 100;
 
@@ -44,6 +44,7 @@ export default function IV() {
             <button
                 className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
                 onClick={async () => {
+                    await green_led_on(port);
                     let min_current = simple_clamp(currentMin, 0, ALLOWED_MAX_CURRENT_MA);
                     let max_current = simple_clamp(currentMax, 0, ALLOWED_MAX_CURRENT_MA);
                     const [x_vals, y_vals] = await IV_curve_current_control(port, min_current, max_current, SAMPLES_IN_RANGE);
@@ -68,6 +69,7 @@ export default function IV() {
                     chartref.current.data.datasets[0].data = Array.from(sorted_x_vals, (x, i) => { return { x: sorted_y_vals[i], y: sorted_x_vals[i] / 1000 }; })
                     console.log(chartref.current.data);
                     chartref.current.update();
+                    await green_led_off(port);
                 }}> Take Measurement </button>
         </div >
     )

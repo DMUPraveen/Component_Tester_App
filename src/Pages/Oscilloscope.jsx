@@ -6,6 +6,7 @@ import { SerialPortContext } from "../Pages/Parent";
 import { create_serial_port, destroy_serial_port, read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import { requestPermission } from "@tauri-apps/api/notification";
 import { findEdgeAndShift, findEdgeAndShiftLinear } from "../Utilities/Analysis";
+import { green_led_on, green_led_off } from "../Utilities/utilities";
 const STM32_VID = 1155;
 const MAX_TRIGGER_LEVEL = "3.3";
 function VerticalSlider({ onChange, verticalScale }) {
@@ -143,6 +144,7 @@ export default function Oscilloscope() {
             if (startStop.current == false) {
                 await reader.cancel();
                 setReader(null);
+                await green_led_off(port);
                 return;
             }
             if (reader == null) return;
@@ -189,6 +191,7 @@ export default function Oscilloscope() {
             return;
         }
         if (reader == null) {
+            await green_led_on(port);
             startStop.current = true;
             start_serial_reader();
             return;

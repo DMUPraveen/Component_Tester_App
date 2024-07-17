@@ -4,6 +4,7 @@ import { read_serial_port, write_serial_port } from "../Utilities/Serial_Port";
 import DrawChart, { DrawChartScatter } from '../Utilities/Draw_Chart'
 import { IV_curve_current_control } from "../Utilities/get_IV";
 import { get_total_bode } from "../Utilities/Bode";
+import { green_led_off, green_led_on } from "../Utilities/utilities";
 
 
 export default function Bode() {
@@ -22,6 +23,7 @@ export default function Bode() {
             <button
                 className="rounded-md border-2 border-zinc-950 drop-shadow-md p-3 font-black text-2xl"
                 onClick={async () => {
+                    await green_led_on(port);
                     const [frequencies, magnitudes] = await get_total_bode(port);
                     console.log(frequencies, magnitudes)
                     // chartref.current.data.labels = sorted_x_vals;
@@ -33,6 +35,7 @@ export default function Bode() {
                     chartref.current.data.labels = frequencies;
                     chartref.current.data.datasets[0].data = magnitudes;
                     chartref.current.update();
+                    await green_led_off(port);
                 }}> Take Measurement </button>
         </div >
     )

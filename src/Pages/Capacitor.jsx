@@ -3,11 +3,13 @@ import { get_pulse_measurement } from '../Utilities/Get_Pulse_Measurement';
 import capacitor_logo from '../assets/capacitor_logo.png'
 import { useContext, useState } from 'react';
 import { SerialPortContext } from './Parent';
+import { green_led_on, green_led_off } from '../Utilities/utilities';
 const CONVERSION = 0.4615
 export function Capacitor() {
     const [value, setValue] = useState(0);
     const { port, setPort } = useContext(SerialPortContext);
     async function on_calculate() {
+        await green_led_on(port);
         let val = await get_pulse_measurement(port);
         val = val * CONVERSION;
         let unit = 'pF'
@@ -21,6 +23,7 @@ export function Capacitor() {
         }
         val = val.toFixed(2) + ' ' + unit;
         setValue(val);
+        await green_led_off(port);
     }
 
     return (
